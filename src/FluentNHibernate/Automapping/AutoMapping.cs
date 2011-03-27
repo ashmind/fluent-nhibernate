@@ -42,10 +42,9 @@ namespace FluentNHibernate.Automapping
         {
             mapping.MergeAttributes(attributes.CloneInner());
 
-            if (mapping is ClassMapping)
+            var classMapping = mapping as ClassMapping;
+            if (classMapping != null)
             {
-                var classMapping = (ClassMapping)mapping;
-
                 if (providers.Id != null)
                     classMapping.Id = providers.Id.GetIdentityMapping();
 
@@ -65,6 +64,13 @@ namespace FluentNHibernate.Automapping
                     classMapping.AddJoin(join.GetJoinMapping());
 
                 classMapping.Tuplizer = providers.TuplizerMapping;
+            }
+
+            var subclassMapping = mapping as SubclassMapping;
+            if (subclassMapping != null)
+            {
+                if (this.attributes.HasValue(x => x.DiscriminatorValue))
+                    subclassMapping.DiscriminatorValue = this.attributes.Get(x => x.DiscriminatorValue);
             }
 
             foreach (var property in providers.Properties)
@@ -188,6 +194,16 @@ namespace FluentNHibernate.Automapping
         {
             mappedMembers.Add(property);
             return base.HasOne<TOther>(property);
+        }
+
+        /// <summary>
+        /// Set the discriminator value, if this entity is in a table-per-class-hierarchy
+        /// mapping strategy.
+        /// </summary>
+        /// <param name="discriminatorValue">Discriminator value</param>
+        public void DiscriminatorValue(object discriminatorValue)
+        {
+            attributes.Set(x => x.DiscriminatorValue, discriminatorValue);
         }
 
         protected override VersionPart Version(Member property)
