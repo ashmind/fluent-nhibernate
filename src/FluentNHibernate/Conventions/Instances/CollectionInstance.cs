@@ -32,6 +32,11 @@ namespace FluentNHibernate.Conventions.Instances
             }
         }
 
+        public void NoRelationship()
+        {
+            mapping.Relationship = null;
+        }
+
         public new ICollectionCascadeInstance Cascade
         {
             get
