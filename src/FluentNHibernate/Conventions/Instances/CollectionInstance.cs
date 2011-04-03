@@ -7,7 +7,10 @@ using FluentNHibernate.MappingModel.Collections;
 
 namespace FluentNHibernate.Conventions.Instances
 {
-    public class CollectionInstance : CollectionInspector, IArrayInstance, IBagInstance, IListInstance, IMapInstance, ISetInstance
+#pragma warning disable 612,618
+    public class CollectionInstance : CollectionInspector, ICollectionInstance,
+        IArrayInstance, IBagInstance, IListInstance, IMapInstance, ISetInstance
+#pragma warning restore 612,618
     {
         readonly CollectionMapping mapping;
         protected bool nextBool = true;
@@ -267,6 +270,17 @@ namespace FluentNHibernate.Conventions.Instances
         public new IKeyInstance Key
         {
             get { return new KeyInstance(mapping.Key); }
+        }
+
+        public new IElementInstance Element
+        {
+            get
+            {
+                if (!mapping.IsSpecified("Element"))
+                    mapping.Element = new ElementMapping();
+                
+                return new ElementInstance(mapping.Element);
+            }
         }
 
         public void ApplyFilter(string name, string condition)
