@@ -27,7 +27,7 @@ namespace FluentNHibernate
         public abstract bool IsPublic { get; }
         public abstract bool IsInternal { get; }
 
-        public bool Equals(Member other)
+        public virtual bool Equals(Member other)
         {
             return Equals(other.MemberInfo.MetadataToken, MemberInfo.MetadataToken) && Equals(other.MemberInfo.Module, MemberInfo.Module);
         }
@@ -420,6 +420,137 @@ namespace FluentNHibernate
             return "{Property: " + member.Name + "}";
         }
     }
+
+    [Serializable]
+    internal class NonExistentMember : Member
+    {
+        readonly string name;
+        readonly Type declaringType;
+        readonly Type propertyType;
+
+        public NonExistentMember(string name, Type declaringType, Type propertyType) {
+            this.name = name;
+            this.declaringType = declaringType;
+            this.propertyType = propertyType;
+        }
+
+        public override void SetValue(object target, object value)
+        {
+            throw new NotSupportedException(PropertyDoesNotExistMessage);
+        }
+
+        public override object GetValue(object target)
+        {
+            throw new NotSupportedException(PropertyDoesNotExistMessage);
+        }
+
+        private string PropertyDoesNotExistMessage
+        {
+            get { return "Property " + name + " does not actually exist on type and can not be accessed directly."; }
+        }
+
+        public override bool TryGetBackingField(out Member field)
+        {
+            field = null;
+            return false;
+        }
+
+        public override string Name
+        {
+            get { return this.name; }
+        }
+        public override Type PropertyType
+        {
+            get { return propertyType; }
+        }
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
+        public override MemberInfo MemberInfo
+        {
+            get { return null; }
+        }
+        public override Type DeclaringType
+        {
+            get { return declaringType; }
+        }
+        public override bool HasIndexParameters
+        {
+            get { return false; }
+        }
+        public override bool IsMethod
+        {
+            get { return false; }
+        }
+        public override bool IsField
+        {
+            get { return false; }
+        }
+        public override bool IsProperty
+        {
+            get { return false; }
+        }
+
+        public override bool IsAutoProperty
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override bool IsPrivate
+        {
+            get { return false; }
+        }
+
+        public override bool IsProtected
+        {
+            get { return false; }
+        }
+
+        public override bool IsPublic
+        {
+            get { return true; }
+        }
+
+        public override bool IsInternal
+        {
+            get { return false; }
+        }
+
+        public MethodMember Get
+        {
+            get { return null; }
+        }
+
+        public MethodMember Set
+        {
+            get { return null; }
+        }
+
+        public override bool Equals(Member other) {
+            var nonexistent = other as NonExistentMember;
+            if (nonexistent == null)
+                return false;
+
+            return nonexistent.Name == this.Name
+                && nonexistent.DeclaringType == this.DeclaringType;
+        }
+
+        public override int GetHashCode() {
+            return this.GetType().GetHashCode()
+                 ^ this.Name.GetHashCode()
+                 ^ this.DeclaringType.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return "{NonExistent: " + this.Name + "}";
+        }
+    }
+
 
     public static class MemberExtensions
     {

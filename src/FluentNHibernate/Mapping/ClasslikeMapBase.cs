@@ -43,6 +43,24 @@ namespace FluentNHibernate.Mapping
 #pragma warning restore 612,618
         }
 
+        /// <summary>
+        /// Create a property mapping.
+        /// </summary>
+        /// <param name="propertyName">Non-existent property name</param>
+        /// <param name="defineAccess">A way to define access to the property</param>
+        /// <example>
+        /// Map("Name");
+        /// </example>
+        public PropertyPart MapNonExistent<TValue>(string propertyName, Action<AccessStrategyBuilder> defineAccess)
+        {
+            var member = new NonExistentMember(propertyName, typeof(T), typeof(TValue));
+#pragma warning disable 612,618
+            var map = Map(member, null);
+#pragma warning restore 612,618
+            defineAccess(map.Access);
+            return map;
+        }
+
         [Obsolete("Do not call this method. Implementation detail mistakenly made public. Will be made private in next version.")]
         protected virtual PropertyPart Map(Member property, string columnName)
         {
