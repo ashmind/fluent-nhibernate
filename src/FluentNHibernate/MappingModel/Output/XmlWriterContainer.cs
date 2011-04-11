@@ -3,6 +3,7 @@ using FluentNHibernate.Infrastructure;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
 using FluentNHibernate.MappingModel.Identity;
+using FluentNHibernate.MappingModel.Queries;
 
 namespace FluentNHibernate.MappingModel.Output
 {
@@ -109,6 +110,9 @@ namespace FluentNHibernate.MappingModel.Output
             RegisterWriter<StoredProcedureMapping>(c =>
                 new XmlStoredProcedureWriter(c.Resolve<IXmlWriterServiceLocator>()));
 
+            RegisterWriter(c => new XmlSqlQueryWriter(c.Resolve<IXmlWriterServiceLocator>()));
+            RegisterWriter(c => new XmlLoadCollectionWriter());
+
             RegisterWriter<TuplizerMapping>(c =>
                 new XmlTuplizerWriter());
         }
@@ -143,7 +147,7 @@ namespace FluentNHibernate.MappingModel.Output
                 new XmlReferenceComponentWriter(c.Resolve<IXmlWriterServiceLocator>()));
         }
 
-        private void RegisterWriter<T>(Func<Container, object> instantiate)
+        private void RegisterWriter<T>(Func<Container, IXmlWriter<T>> instantiate)
         {
             Register<IXmlWriter<T>>(instantiate);
         }

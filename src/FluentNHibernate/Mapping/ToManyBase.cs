@@ -29,11 +29,10 @@ namespace FluentNHibernate.Mapping
         private Func<AttributeStore, CollectionMapping> collectionBuilder;
         private IndexMapping indexMapping;
         protected Member member;
-        private Type entity;
 
-        protected ToManyBase(Type entity, Member member, Type type)
+        protected ToManyBase(IClasslikeMap owner, Member member, Type type)
         {
-            this.entity = entity;
+            this.Owner = owner;
             this.member = member;
             AsBag();
             access = new AccessStrategyBuilder<T>((T)this, value => collectionAttributes.Set(x => x.Access, value));
@@ -44,7 +43,7 @@ namespace FluentNHibernate.Mapping
             SetDefaultCollectionType();
             SetCustomCollectionType(type);
             SetDefaultAccess();
-            Cache = new CachePart(entity);
+            Cache = new CachePart(Owner.EntityType);
 
             collectionAttributes.SetDefault(x => x.Name, member.Name);
             relationshipAttributes.SetDefault(x => x.Class, new TypeReference(typeof(TChild)));
@@ -64,12 +63,19 @@ namespace FluentNHibernate.Mapping
 
         /// <summary>
         /// This method is used to set a custom loader query for the collection.
-        /// The output is set as the query-ref attribute in the "loader" subelement of the collection
+        /// The output is defined as a custom "sql-query" element in the class mapping and the query-ref attribute
+        /// in the "loader" subelement of the collection.
         /// </summary>
-        /// <param name="queryRef">The name of the query that would be used to load this collection</param>
-        public T Loader(string queryRef)
+        /// <param name="sqlQuery">The sql query that would be used to load this collection</param>
+        /// <param name="collectionAlias">The collection alias used to refer to the collection within the query</param>
+        public T LoadUsingSqlQuery(string sqlQuery, string collectionAlias)
         {
-            collectionAttributes.Set(x => x.Loader, new LoaderMapping(queryRef));
+            var queryName = this.member.Name.ToLowerInvariant() + "-loader";
+
+            Owner.SqlQuery(queryName, sqlQuery)
+                 .ReturnCollection(collectionAlias, this.member);
+
+            collectionAttributes.Set(x => x.Loader, new LoaderMapping(queryName));
             return (T)this;
         }
 
@@ -669,6 +675,8 @@ namespace FluentNHibernate.Mapping
             return this.ApplyFilter<TFilter>(null);
         }
 
+        protected IClasslikeMap Owner { get; private set; }
+
         protected IList<FilterPart> Filters
         {
             get { return filters; }
@@ -719,11 +727,11 @@ namespace FluentNHibernate.Mapping
             if (!mapping.IsSpecified("Name"))
                 mapping.SetDefaultValue(x => x.Name, GetDefaultName());
 
-            mapping.ContainingEntityType = entity;
+            mapping.ContainingEntityType = Owner.EntityType;
             mapping.ChildType = typeof(TChild);
             mapping.Member = member;
             mapping.Key = keyMapping;
-            mapping.Key.ContainingEntityType = entity;
+            mapping.Key.ContainingEntityType = Owner.EntityType;
             mapping.Relationship = GetRelationship();
 
             if (Cache.IsDirty)

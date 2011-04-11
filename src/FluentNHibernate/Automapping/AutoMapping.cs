@@ -94,6 +94,9 @@ namespace FluentNHibernate.Automapping
             foreach (var storedProcedure in providers.StoredProcedures)
                 mapping.AddStoredProcedure(storedProcedure.GetStoredProcedureMapping());
 
+            foreach (var query in providers.Queries)
+                mapping.AddQuery(query.GetQueryMapping());
+
             foreach (var filter in providers.Filters)
                 mapping.AddOrReplaceFilter(filter.GetFilterMapping());
         }

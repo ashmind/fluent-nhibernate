@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FluentNHibernate.MappingModel.Collections;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Visitors;
 
 namespace FluentNHibernate.MappingModel.ClassBased
@@ -78,6 +79,11 @@ namespace FluentNHibernate.MappingModel.ClassBased
         public IEnumerable<StoredProcedureMapping> StoredProcedures
         {
             get { return mappedMembers.StoredProcedures; }
+        }
+
+        public IEnumerable<IQueryMapping> Queries
+        {
+            get { return mappedMembers.Queries; }
         }
 
         public void AddProperty(PropertyMapping property)
@@ -163,6 +169,11 @@ namespace FluentNHibernate.MappingModel.ClassBased
         public void AddStoredProcedure(StoredProcedureMapping mapping)
         {
             mappedMembers.AddStoredProcedure(mapping);
+        }
+
+        public void AddQuery(IQueryMapping mapping)
+        {
+            mappedMembers.AddQuery(mapping);
         }
         #endregion
 

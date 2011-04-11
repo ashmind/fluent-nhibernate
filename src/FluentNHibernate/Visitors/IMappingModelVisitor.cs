@@ -3,6 +3,7 @@ using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
 using FluentNHibernate.MappingModel.Identity;
+using FluentNHibernate.MappingModel.Queries;
 using CollectionMapping = FluentNHibernate.MappingModel.Collections.CollectionMapping;
 
 namespace FluentNHibernate.Visitors
@@ -44,6 +45,8 @@ namespace FluentNHibernate.Visitors
         void ProcessFilter(FilterMapping mapping);
         void ProcessFilterDefinition(FilterDefinitionMapping mapping);
         void ProcessStoredProcedure(StoredProcedureMapping mapping);
+        void ProcessSqlQuery(SqlQueryMapping mapping);
+        void ProcessLoadCollection(LoadCollectionMapping mapping);
         void ProcessTuplizer(TuplizerMapping mapping);
         void ProcessCollection(MappingModel.Collections.CollectionMapping mapping);
 
@@ -86,6 +89,8 @@ namespace FluentNHibernate.Visitors
         void Visit(FilterMapping mapping);
         void Visit(FilterDefinitionMapping mapping);
         void Visit(StoredProcedureMapping mapping);
+        void Visit(SqlQueryMapping mapping);
+        void Visit(LoadCollectionMapping mapping);
         void Visit(TuplizerMapping mapping);
     }
 }

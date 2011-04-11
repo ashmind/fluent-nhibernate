@@ -8,7 +8,6 @@ namespace FluentNHibernate.Mapping
 {
     public class OneToManyPart<TChild> : ToManyBase<OneToManyPart<TChild>, TChild, OneToManyMapping>
     {
-        private readonly Type entity;
         private readonly ColumnMappingCollection<OneToManyPart<TChild>> keyColumns;
         private readonly CollectionCascadeExpression<OneToManyPart<TChild>> cascade;
         private readonly NotFoundExpression<OneToManyPart<TChild>> notFound;
@@ -17,15 +16,14 @@ namespace FluentNHibernate.Mapping
         private Type valueType;
         private bool isTernary;
 
-        public OneToManyPart(Type entity, Member property)
-            : this(entity, property, property.PropertyType)
+        public OneToManyPart(IClasslikeMap owner, Member property)
+            : this(owner, property, property.PropertyType)
         {
         }
 
-        protected OneToManyPart(Type entity, Member member, Type collectionType)
-            : base(entity, member, collectionType)
+        protected OneToManyPart(IClasslikeMap owner, Member member, Type collectionType)
+            : base(owner, member, collectionType)
         {
-            this.entity = entity;
             childType = collectionType;
 
             keyColumns = new ColumnMappingCollection<OneToManyPart<TChild>>(this);
@@ -183,7 +181,7 @@ namespace FluentNHibernate.Mapping
             var collection = base.GetCollectionMapping();
 
             if (keyColumns.Count() == 0)
-                collection.Key.AddDefaultColumn(new ColumnMapping { Name = entity.Name + "_id" });
+                collection.Key.AddDefaultColumn(new ColumnMapping { Name = this.Owner.EntityType.Name + "_id" });
 
             foreach (var column in keyColumns)
             {
@@ -203,7 +201,7 @@ namespace FluentNHibernate.Mapping
         {
             var mapping = new OneToManyMapping(relationshipAttributes.CloneInner())
             {
-                ContainingEntityType = entity
+                ContainingEntityType = this.Owner.EntityType
             };
 
             if (isTernary && valueType != null)

@@ -3,6 +3,7 @@ using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
 using FluentNHibernate.MappingModel.Identity;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Visitors;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -114,6 +115,7 @@ namespace FluentNHibernate.Testing.MappingModel
             _classMapping.StoredProcedures.ShouldContain(storedProcedure);
         }
 
+
         [Test]
         public void Should_pass_stored_procedure_to_the_visitor()
         {
@@ -122,6 +124,29 @@ namespace FluentNHibernate.Testing.MappingModel
 
             var visitor = MockRepository.GenerateMock<IMappingModelVisitor>();
             visitor.Expect(x => x.Visit(classMap.StoredProcedures.First()));
+
+            classMap.AcceptVisitor(visitor);
+
+            visitor.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void Can_add_sql_query()
+        {
+            var query = new SqlQueryMapping("name", "SQL", new IReturnMapping[0]);
+            _classMapping.AddQuery(query);
+            _classMapping.Queries.ShouldContain(query);
+        }
+
+        [Test]
+        public void Should_pass_sql_query_to_the_visitor()
+        {
+            var classMap = new ClassMapping { Name = "class1" };
+            var sqlQuery = new SqlQueryMapping("name", "SQL", new IReturnMapping[0]);
+            classMap.AddQuery(sqlQuery);
+
+            var visitor = MockRepository.GenerateMock<IMappingModelVisitor>();
+            visitor.Expect(x => x.Visit(sqlQuery));
 
             classMap.AcceptVisitor(visitor);
 

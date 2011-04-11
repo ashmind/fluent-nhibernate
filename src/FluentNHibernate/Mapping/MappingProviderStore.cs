@@ -16,6 +16,7 @@ namespace FluentNHibernate.Mapping
         public IList<IAnyMappingProvider> Anys { get; set; }
         public IList<IFilterMappingProvider> Filters { get; set; }
         public IList<IStoredProcedureMappingProvider> StoredProcedures { get; set; }
+        public IList<IQueryMappingProvider> Queries { get; private set; }
         public IList<IJoinMappingProvider> Joins { get; set; }
 
         public IIdentityMappingProvider Id { get; set; }
@@ -35,6 +36,7 @@ namespace FluentNHibernate.Mapping
             References = new List<IManyToOneMappingProvider>();
             Anys = new List<IAnyMappingProvider>();
             Filters = new List<IFilterMappingProvider>();
+            Queries = new List<IQueryMappingProvider>();
             StoredProcedures = new List<IStoredProcedureMappingProvider>();
             Joins = new List<IJoinMappingProvider>();
         }

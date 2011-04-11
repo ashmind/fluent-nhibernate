@@ -662,6 +662,9 @@ namespace FluentNHibernate.Mapping
             foreach (var storedProcedure in providers.StoredProcedures)
                 mapping.AddStoredProcedure(storedProcedure.GetStoredProcedureMapping());
 
+            foreach (var query in providers.Queries)
+                mapping.AddQuery(query.GetQueryMapping());
+
             mapping.Tuplizer = providers.TuplizerMapping;
 
             return mapping;

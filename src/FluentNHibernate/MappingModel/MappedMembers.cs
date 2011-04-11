@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentNHibernate.MappingModel.ClassBased;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Visitors;
 
 namespace FluentNHibernate.MappingModel
@@ -17,6 +18,7 @@ namespace FluentNHibernate.MappingModel
         private readonly List<JoinMapping> joins;
         private readonly List<FilterMapping> filters;
         private readonly List<StoredProcedureMapping> storedProcedures;
+        private readonly List<IQueryMapping> queries;
 
         public MappedMembers()
         {
@@ -29,6 +31,7 @@ namespace FluentNHibernate.MappingModel
             joins = new List<JoinMapping>();
             filters = new List<FilterMapping>();
             storedProcedures = new List<StoredProcedureMapping>();
+            queries = new List<IQueryMapping>();
         }
 
         public IEnumerable<PropertyMapping> Properties
@@ -83,6 +86,11 @@ namespace FluentNHibernate.MappingModel
         public IEnumerable<StoredProcedureMapping> StoredProcedures
         {
             get { return storedProcedures; }
+        }
+
+        public IEnumerable<IQueryMapping> Queries
+        {
+            get { return queries; }
         }
 
         public void AddProperty(PropertyMapping property)
@@ -213,6 +221,9 @@ namespace FluentNHibernate.MappingModel
 
             foreach (var storedProcedure in storedProcedures)
                 visitor.Visit(storedProcedure);
+
+            foreach (var query in queries)
+                query.AcceptVisitorForVisitOnly(visitor);
         }
 
         public bool IsSpecified(string property)
@@ -223,6 +234,11 @@ namespace FluentNHibernate.MappingModel
         public void AddStoredProcedure(StoredProcedureMapping mapping)
         {
             storedProcedures.Add(mapping);
+        }
+
+        public void AddQuery(IQueryMapping mapping)
+        {
+            queries.Add(mapping);
         }
 
         public bool Equals(MappedMembers other)
@@ -237,7 +253,8 @@ namespace FluentNHibernate.MappingModel
                 other.anys.ContentEquals(anys) &&
                 other.joins.ContentEquals(joins) &&
                 other.filters.ContentEquals(filters) &&
-                other.storedProcedures.ContentEquals(storedProcedures);
+                other.storedProcedures.ContentEquals(storedProcedures) &&
+                other.queries.ContentEquals(queries);
         }
 
         public override bool Equals(object obj)
@@ -261,9 +278,9 @@ namespace FluentNHibernate.MappingModel
                 result = (result * 397) ^ (joins != null ? joins.GetHashCode() : 0);
                 result = (result * 397) ^ (filters != null ? filters.GetHashCode() : 0);
                 result = (result * 397) ^ (storedProcedures != null ? storedProcedures.GetHashCode() : 0);
+                result = (result * 397) ^ (queries != null ? queries.GetHashCode() : 0);
                 return result;
             }
         }
-
     }
 }

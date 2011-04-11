@@ -7,7 +7,7 @@ using FluentNHibernate.Utils;
 
 namespace FluentNHibernate.Mapping
 {
-    public abstract class ClasslikeMapBase<T>
+    public abstract class ClasslikeMapBase<T> : IClasslikeMap
     {
         readonly MappingProviderStore providers;
 
@@ -340,7 +340,7 @@ namespace FluentNHibernate.Mapping
         [Obsolete("Do not call this method. Implementation detail mistakenly made public. Will be made private in next version.")]
         protected virtual OneToManyPart<TChild> HasMany<TChild>(Member member)
         {
-            var part = new OneToManyPart<TChild>(EntityType, member);
+            var part = new OneToManyPart<TChild>(this, member);
 
             providers.Collections.Add(part);
 
@@ -388,7 +388,7 @@ namespace FluentNHibernate.Mapping
         [Obsolete("Do not call this method. Implementation detail mistakenly made public. Will be made private in next version.")]
         protected virtual ManyToManyPart<TChild> HasManyToMany<TChild>(Member property)
         {
-            var part = new ManyToManyPart<TChild>(EntityType, property);
+            var part = new ManyToManyPart<TChild>(this, property);
 
             providers.Collections.Add(part);
 
@@ -455,6 +455,18 @@ namespace FluentNHibernate.Mapping
         public StoredProcedurePart SqlDeleteAll(string innerText)
         {
             return StoredProcedure("sql-delete-all", innerText);
+        }
+
+        /// <summary>
+        /// Specify a custom sql query.
+        /// </summary>
+        /// <param name="name">A name of the query.</param>
+        /// <param name="queryText">A text of the query.</param>
+        public SqlQueryPart SqlQuery(string name, string queryText)
+        {
+            var part = new SqlQueryPart(name, queryText);
+            providers.Queries.Add(part);
+            return part;
         }
 
         protected StoredProcedurePart StoredProcedure(string element, string innerText)

@@ -14,7 +14,6 @@ namespace FluentNHibernate.Mapping
     public class ManyToManyPart<TChild> : ToManyBase<ManyToManyPart<TChild>, TChild, ManyToManyMapping>
     {
         private readonly IList<FilterPart> childFilters = new List<FilterPart>();
-        private readonly Type entity;
         private readonly FetchTypeExpression<ManyToManyPart<TChild>> fetch;
         private readonly NotFoundExpression<ManyToManyPart<TChild>> notFound;
         private IndexManyToManyPart manyToManyIndex;
@@ -25,16 +24,15 @@ namespace FluentNHibernate.Mapping
         private Type valueType;
         private bool isTernary;
 
-        public ManyToManyPart(Type entity, Member property)
-            : this(entity, property, property.PropertyType)
+        public ManyToManyPart(IClasslikeMap owner, Member property)
+            : this(owner, property, property.PropertyType)
         {
             childType = property.PropertyType;
         }
 
-        protected ManyToManyPart(Type entity, Member member, Type collectionType)
-            : base(entity, member, collectionType)
+        protected ManyToManyPart(IClasslikeMap owner, Member member, Type collectionType)
+            : base(owner, member, collectionType)
         {
-            this.entity = entity;
             childType = collectionType;
 
             fetch = new FetchTypeExpression<ManyToManyPart<TChild>>(this, value => collectionAttributes.Set(x => x.Fetch, value));
@@ -225,8 +223,7 @@ namespace FluentNHibernate.Mapping
         {
             var mapping = new ManyToManyMapping(relationshipAttributes.CloneInner())
             {
-                ContainingEntityType = entity,
-
+                ContainingEntityType = Owner.EntityType
             };
 
             if (isTernary && valueType != null)
@@ -341,7 +338,7 @@ namespace FluentNHibernate.Mapping
 
             // key columns
             if (parentKeyColumns.Count == 0)
-                collection.Key.AddDefaultColumn(new ColumnMapping { Name = entity.Name + "_id" });
+                collection.Key.AddDefaultColumn(new ColumnMapping { Name = Owner.EntityType.Name + "_id" });
 
             foreach (var column in parentKeyColumns)
                 collection.Key.AddColumn(column);

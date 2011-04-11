@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.Collections;
 using FluentNHibernate.Testing.DomainModel.Mapping;
@@ -50,13 +51,21 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
         }
 
         [Test]
-        public void ShouldSetLoader() 
+        public void LoadUsingSqlQueryShouldCreateQueryAndReferenceItInLoader()
         {
-            OneToMany(x => x.ListOfChildren)
-                .Mapping(m => m.Loader("test-query"))
+            ClassMap<OneToManyTarget>()
+                .Mapping(m => {
+                    m.HasMany(x => x.ListOfChildren)
+                     .LoadUsingSqlQuery("Some SQL", "alias");
+                })
                 .ModelShouldMatch(x => {
-                    x.Loader.ShouldNotBeNull();
-                    x.Loader.QueryRef.ShouldEqual("test-query");
+                    var query = x.Queries.SingleOrDefault(q => q.Text == "Some SQL");
+                    query.ShouldNotBeNull();
+
+                    var oneToMany = x.Collections.SingleOrDefault();
+                    oneToMany.ShouldNotBeNull();
+                    oneToMany.Loader.ShouldNotBeNull();
+                    oneToMany.Loader.QueryRef.ShouldEqual(query.Name);
                 });
         }
 

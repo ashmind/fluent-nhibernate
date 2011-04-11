@@ -7,9 +7,9 @@ namespace FluentNHibernate.Infrastructure
     {
         private readonly IDictionary<Type, Func<Container, object>> registeredTypes = new Dictionary<Type, Func<Container, object>>();
 
-        public void Register<T>(Func<Container, object> instantiateFunc)
+        public void Register<T>(Func<Container, T> instantiateFunc)
         {
-            registeredTypes[typeof(T)] = instantiateFunc;
+            registeredTypes[typeof(T)] = c => (object)instantiateFunc(c);
         }
 
         public object Resolve(Type type)

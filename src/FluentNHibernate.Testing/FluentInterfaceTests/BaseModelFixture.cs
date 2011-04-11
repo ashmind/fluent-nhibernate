@@ -9,6 +9,7 @@ using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
 using FluentNHibernate.MappingModel.Identity;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Testing.DomainModel;
 using FluentNHibernate.Testing.DomainModel.Mapping;
 using FluentNHibernate.Utils.Reflection;
@@ -97,22 +98,35 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
 
         protected ModelTester<OneToManyPart<T>, CollectionMapping> OneToMany<T>(Expression<Func<OneToManyTarget, IEnumerable<T>>> property)
         {
-            return new ModelTester<OneToManyPart<T>, CollectionMapping>(() => new OneToManyPart<T>(typeof(OneToManyTarget), ReflectionHelper.GetMember(property)), x => ((ICollectionMappingProvider)x).GetCollectionMapping());
+            return new ModelTester<OneToManyPart<T>, CollectionMapping>(
+                () => new OneToManyPart<T>(new ClassMap<OneToManyTarget>(), ReflectionHelper.GetMember(property)),
+                x => ((ICollectionMappingProvider)x).GetCollectionMapping()
+             );
         }
 
         protected ModelTester<ManyToManyPart<T>, CollectionMapping> ManyToMany<T>(Expression<Func<ManyToManyTarget, IList<T>>> property)
         {
-            return new ModelTester<ManyToManyPart<T>, CollectionMapping>(() => new ManyToManyPart<T>(typeof(ManyToManyTarget), ReflectionHelper.GetMember(property)), x => ((ICollectionMappingProvider)x).GetCollectionMapping());
+            return new ModelTester<ManyToManyPart<T>, CollectionMapping>
+            (
+                () => new ManyToManyPart<T>(new ClassMap<ManyToManyTarget>(), ReflectionHelper.GetMember(property)),
+                x => ((ICollectionMappingProvider)x).GetCollectionMapping()
+            );
         }
 
         protected ModelTester<ManyToManyPart<IDictionary>, CollectionMapping> ManyToMany(Expression<Func<ManyToManyTarget, IDictionary>> property)
         {
-            return new ModelTester<ManyToManyPart<IDictionary>, CollectionMapping>(() => new ManyToManyPart<IDictionary>(typeof(ManyToManyTarget), ReflectionHelper.GetMember(property)), x => ((ICollectionMappingProvider)x).GetCollectionMapping());
+            return new ModelTester<ManyToManyPart<IDictionary>, CollectionMapping>(
+                () => new ManyToManyPart<IDictionary>(new ClassMap<ManyToManyTarget>(), ReflectionHelper.GetMember(property)),
+                x => ((ICollectionMappingProvider)x).GetCollectionMapping()
+            );
         }
 
         protected ModelTester<ManyToManyPart<IDictionary<TIndex, TValue>>, CollectionMapping> ManyToMany<TIndex, TValue>(Expression<Func<ManyToManyTarget, IDictionary<TIndex, TValue>>> property)
         {
-            return new ModelTester<ManyToManyPart<IDictionary<TIndex, TValue>>, CollectionMapping>(() => new ManyToManyPart<IDictionary<TIndex, TValue>>(typeof(ManyToManyTarget), ReflectionHelper.GetMember(property)), x => ((ICollectionMappingProvider)x).GetCollectionMapping());
+            return new ModelTester<ManyToManyPart<IDictionary<TIndex, TValue>>, CollectionMapping>(
+                () => new ManyToManyPart<IDictionary<TIndex, TValue>>(new ClassMap<ManyToManyTarget>(), ReflectionHelper.GetMember(property)),
+                x => ((ICollectionMappingProvider)x).GetCollectionMapping()
+            );
         }
 
         protected ModelTester<ManyToOnePart<PropertyReferenceTarget>, ManyToOneMapping> ManyToOne()
@@ -150,6 +164,19 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
         protected ModelTester<NaturalIdPart<T>, NaturalIdMapping> NaturalId<T>()
         {
             return new ModelTester<NaturalIdPart<T>, NaturalIdMapping>(() => new NaturalIdPart<T>(), x => ((INaturalIdMappingProvider)x).GetNaturalIdMapping());
+        }
+
+        protected ModelTester<SqlQueryPart, SqlQueryMapping> SqlQuery()
+        {
+            return this.SqlQuery(null, null);
+        }
+
+        protected ModelTester<SqlQueryPart, SqlQueryMapping> SqlQuery(string name, string queryText)
+        {
+            return new ModelTester<SqlQueryPart, SqlQueryMapping>(
+                () => new SqlQueryPart(name, queryText),
+                x => (SqlQueryMapping)((IQueryMappingProvider)x).GetQueryMapping()
+            );
         }
     }
 }
