@@ -198,6 +198,18 @@ namespace FluentNHibernate.Testing.MappingModel.Output
         }
 
         [Test]
+        public void ShouldWriteLoaderElement() 
+        {
+            var mapping = CollectionMapping.Map();
+
+            mapping.Loader = new LoaderMapping("test");
+
+            writer.VerifyXml(mapping)
+                .Element("loader").Exists()
+                .HasAttribute("query-ref", "test");
+        }
+
+        [Test]
         public void ShouldWriteKey()
         {
             var mapping = CollectionMapping.Map();

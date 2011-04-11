@@ -34,6 +34,9 @@ namespace FluentNHibernate.MappingModel.Collections
         {
             visitor.ProcessCollection(this);
 
+            if (Loader != null)
+                visitor.Visit(Loader);
+
             if (Key != null)
                 visitor.Visit(Key);
 
@@ -63,6 +66,12 @@ namespace FluentNHibernate.MappingModel.Collections
         }
 
         public IRelationship OtherSide { get; set; }
+
+        public LoaderMapping Loader
+        {
+            get { return attributes.Get(x => x.Loader); }
+            set { attributes.Set(x => x.Loader, value); }
+        }
 
         public KeyMapping Key
         {

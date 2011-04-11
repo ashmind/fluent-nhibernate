@@ -62,6 +62,7 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.Check = "check";
             mapping.ChildType = typeof(Target);
             mapping.CollectionType = new TypeReference(typeof(Target));
+            mapping.Loader = new LoaderMapping("test");
             mapping.CompositeElement = new CompositeElementMapping();
             mapping.Element = new ElementMapping();
             mapping.Fetch = "fetch";

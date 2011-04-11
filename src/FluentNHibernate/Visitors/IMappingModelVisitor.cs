@@ -39,6 +39,7 @@ namespace FluentNHibernate.Visitors
         void ProcessMetaValue(MetaValueMapping mapping);
         void ProcessKeyProperty(KeyPropertyMapping mapping);
         void ProcessKeyManyToOne(KeyManyToOneMapping mapping);
+        void ProcessLoader(LoaderMapping mapping);
         void ProcessElement(ElementMapping mapping);
         void ProcessFilter(FilterMapping mapping);
         void ProcessFilterDefinition(FilterDefinitionMapping mapping);
@@ -80,6 +81,7 @@ namespace FluentNHibernate.Visitors
         void Visit(MetaValueMapping mapping);
         void Visit(KeyPropertyMapping mapping);
         void Visit(KeyManyToOneMapping mapping);
+        void Visit(LoaderMapping mapping);
         void Visit(ElementMapping mapping);
         void Visit(FilterMapping mapping);
         void Visit(FilterDefinitionMapping mapping);

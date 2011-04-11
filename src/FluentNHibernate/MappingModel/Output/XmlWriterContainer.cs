@@ -62,6 +62,9 @@ namespace FluentNHibernate.MappingModel.Output
             RegisterWriter<CollectionMapping>(c =>
                 new XmlCollectionWriter(c.Resolve<IXmlWriterServiceLocator>()));
 
+            RegisterWriter<LoaderMapping>(c =>
+                new XmlLoaderWriter());
+
             RegisterWriter<IIndexMapping>(c =>
                 new XmlIIndexWriter(c.Resolve<IXmlWriterServiceLocator>()));
 

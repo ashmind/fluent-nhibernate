@@ -63,6 +63,17 @@ namespace FluentNHibernate.Mapping
         }
 
         /// <summary>
+        /// This method is used to set a custom loader query for the collection.
+        /// The output is set as the query-ref attribute in the "loader" subelement of the collection
+        /// </summary>
+        /// <param name="queryRef">The name of the query that would be used to load this collection</param>
+        public T Loader(string queryRef)
+        {
+            collectionAttributes.Set(x => x.Loader, new LoaderMapping(queryRef));
+            return (T)this;
+        }
+
+        /// <summary>
         /// Specify caching for this entity.
         /// </summary>
         public CachePart Cache { get; private set; }

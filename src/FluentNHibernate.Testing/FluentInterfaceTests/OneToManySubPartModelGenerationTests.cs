@@ -50,6 +50,17 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
         }
 
         [Test]
+        public void ShouldSetLoader() 
+        {
+            OneToMany(x => x.ListOfChildren)
+                .Mapping(m => m.Loader("test-query"))
+                .ModelShouldMatch(x => {
+                    x.Loader.ShouldNotBeNull();
+                    x.Loader.QueryRef.ShouldEqual("test-query");
+                });
+        }
+
+        [Test]
         public void ShouldSetElement()
         {
             OneToMany(x => x.ListOfChildren)

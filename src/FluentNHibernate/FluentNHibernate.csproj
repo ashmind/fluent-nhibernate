@@ -420,12 +420,14 @@
     <Compile Include="MappingModel\ClassBased\SubclassType.cs" />
     <Compile Include="MappingModel\Collections\Collection.cs" />
     <Compile Include="MappingModel\Collections\Lazy.cs" />
+    <Compile Include="MappingModel\Collections\LoaderMapping.cs" />
     <Compile Include="MappingModel\Collections\NestedCompositeElementMapping.cs" />
     <Compile Include="MappingModel\EqualityExtensions.cs" />
     <Compile Include="MappingModel\Identity\ICompositeIdKeyMapping.cs" />
     <Compile Include="MappingModel\IRelationship.cs" />
     <Compile Include="MappingModel\NaturalIdMapping.cs" />
     <Compile Include="MappingModel\Output\CollectionAttributeWriter.cs" />
+    <Compile Include="MappingModel\Output\XmlLoaderWriter.cs" />
     <Compile Include="MappingModel\Output\XmlBagWriter.cs" />
     <Compile Include="MappingModel\Output\XmlNaturalIdWriter.cs" />
     <Compile Include="Mapping\Access.cs" />

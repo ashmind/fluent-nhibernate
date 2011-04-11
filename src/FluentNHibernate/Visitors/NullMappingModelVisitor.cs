@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
@@ -137,6 +138,10 @@ namespace FluentNHibernate.Visitors
         public virtual void ProcessKeyManyToOne(KeyManyToOneMapping mapping)
         {
             
+        }
+
+        public virtual void ProcessLoader(LoaderMapping mapping)
+        {
         }
 
         public virtual void ProcessElement(ElementMapping mapping)
@@ -334,6 +339,11 @@ namespace FluentNHibernate.Visitors
         }
 
         public virtual void Visit(ElementMapping mapping)
+        {
+
+        }
+
+        public virtual void Visit(LoaderMapping mapping)
         {
             
         }
