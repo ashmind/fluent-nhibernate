@@ -76,6 +76,8 @@ namespace FluentNHibernate.Testing.Cfg.Db
 
         }
 
+#pragma warning disable 612,618
+
         [Test]
         public void Provider_Class_should_set_property_value()
         {
@@ -116,6 +118,7 @@ namespace FluentNHibernate.Testing.Cfg.Db
                 .RegionPrefix("foo"));
             ValueOf("cache.region_prefix").ShouldEqual("foo");
         }
+#pragma warning restore 612,618
 
         [Test]
         public void Query_Substitutions_should_set_property_value()
