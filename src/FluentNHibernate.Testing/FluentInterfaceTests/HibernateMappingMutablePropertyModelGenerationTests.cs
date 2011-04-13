@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 
 namespace FluentNHibernate.Testing.FluentInterfaceTests
@@ -83,6 +84,20 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
             HibernateMapping()
                 .Mapping(m => m.Assembly("assembly"))
                 .ModelShouldMatch(x => x.Assembly.ShouldEndWith("assembly"));
+        }
+
+        [Test]
+        public void SqlQueryShouldAddQueryWithCorrectTextAndName()
+        {
+            HibernateMapping()
+                .Mapping(m => m.SqlQuery("xxx", "some SQL"))
+                .ModelShouldMatch(x => {
+                    var query = x.Queries.SingleOrDefault();
+
+                    query.ShouldNotBeNull();
+                    query.Name.ShouldEqual("xxx");
+                    query.Text.ShouldEqual("some SQL");
+                });
         }
     }
 }

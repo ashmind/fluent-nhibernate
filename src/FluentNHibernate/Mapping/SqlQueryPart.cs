@@ -12,6 +12,7 @@ namespace FluentNHibernate.Mapping
     {
         private readonly string name;
         private readonly string queryText;
+        private bool automatic;
         private readonly IList<IReturnMapping> returnMappings = new List<IReturnMapping>();
 
         public SqlQueryPart(string name, string queryText)
@@ -32,9 +33,25 @@ namespace FluentNHibernate.Mapping
             return this;
         }
 
+        /// <summary>
+        /// Defines that the query was generated internally, 
+        /// as a side-effect of some other code (for example, in
+        /// <see cref="ToManyBase{T,TChild,TRelationshipAttributes}.LoadUsingSqlQuery" />).
+        /// </summary>
+        internal SqlQueryPart Automatic
+        {
+            get {
+                automatic = true;
+                return this;
+            }
+        }
+
         IQueryMapping IQueryMappingProvider.GetQueryMapping()
         {
-            return new SqlQueryMapping(name, queryText, returnMappings);
+            return new SqlQueryMapping(name, queryText, returnMappings)
+            {
+                Automatic = automatic
+            };
         }
     }
 }

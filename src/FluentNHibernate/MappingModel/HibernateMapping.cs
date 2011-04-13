@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using FluentNHibernate.Mapping.Providers;
 using FluentNHibernate.MappingModel.ClassBased;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Visitors;
 
 namespace FluentNHibernate.MappingModel
@@ -12,6 +14,7 @@ namespace FluentNHibernate.MappingModel
         private readonly IList<ClassMapping> classes;
         private readonly IList<FilterDefinitionMapping> filters;
         private readonly IList<ImportMapping> imports;
+        private readonly MappedQueries queries;
         private readonly AttributeStore<HibernateMapping> attributes;
 
         public HibernateMapping()
@@ -24,6 +27,7 @@ namespace FluentNHibernate.MappingModel
             classes = new List<ClassMapping>();
             filters = new List<FilterDefinitionMapping>();
             imports = new List<ImportMapping>();
+            queries = new MappedQueries();
         }
 
         public override void AcceptVisitor(IMappingModelVisitor visitor)
@@ -38,6 +42,9 @@ namespace FluentNHibernate.MappingModel
 
             foreach (var filterMapping in Filters)
                 visitor.Visit(filterMapping);
+
+            foreach (var queryMapping in Queries)
+                queryMapping.AcceptVisitorForVisitOnly(visitor);
         }
 
         public IEnumerable<ClassMapping> Classes
@@ -55,6 +62,11 @@ namespace FluentNHibernate.MappingModel
             get { return imports; }
         }
 
+        public IEnumerable<IQueryMapping> Queries
+        {
+            get { return queries; }
+        }
+
         public void AddClass(ClassMapping classMapping)
         {
             classes.Add(classMapping);            
@@ -68,6 +80,16 @@ namespace FluentNHibernate.MappingModel
         public void AddImport(ImportMapping importMapping)
         {
             imports.Add(importMapping);
+        }
+
+        public void AddQuery(IQueryMapping queryMapping)
+        {
+            queries.Add(queryMapping);
+        }
+
+        public void AddOrReplaceQuery(IQueryMapping queryMapping)
+        {
+            queries.AddOrReplace(queryMapping);
         }
 
         public string Catalog

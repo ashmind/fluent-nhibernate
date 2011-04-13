@@ -18,7 +18,7 @@ namespace FluentNHibernate.MappingModel
         private readonly List<JoinMapping> joins;
         private readonly List<FilterMapping> filters;
         private readonly List<StoredProcedureMapping> storedProcedures;
-        private readonly List<IQueryMapping> queries;
+        private readonly MappedQueries queries;
 
         public MappedMembers()
         {
@@ -31,7 +31,7 @@ namespace FluentNHibernate.MappingModel
             joins = new List<JoinMapping>();
             filters = new List<FilterMapping>();
             storedProcedures = new List<StoredProcedureMapping>();
-            queries = new List<IQueryMapping>();
+            queries = new MappedQueries();
         }
 
         public IEnumerable<PropertyMapping> Properties
@@ -88,7 +88,7 @@ namespace FluentNHibernate.MappingModel
             get { return storedProcedures; }
         }
 
-        public IEnumerable<IQueryMapping> Queries
+        public MappedQueries Queries
         {
             get { return queries; }
         }
@@ -222,8 +222,7 @@ namespace FluentNHibernate.MappingModel
             foreach (var storedProcedure in storedProcedures)
                 visitor.Visit(storedProcedure);
 
-            foreach (var query in queries)
-                query.AcceptVisitorForVisitOnly(visitor);
+            queries.AcceptVisitor(visitor);
         }
 
         public bool IsSpecified(string property)
@@ -236,19 +235,6 @@ namespace FluentNHibernate.MappingModel
             storedProcedures.Add(mapping);
         }
 
-        public void AddQuery(IQueryMapping mapping)
-        {
-            if (queries.Exists(x => x.Name == mapping.Name))
-                throw new ArgumentException("Query '" + mapping.Name + "' is already defined.", "mapping");
-
-            queries.Add(mapping);
-        }
-
-        public void AddOrReplaceQuery(IQueryMapping mapping)
-        {
-            queries.RemoveAll(x => x.Name == mapping.Name);
-            queries.Add(mapping);
-        }
 
         public bool Equals(MappedMembers other)
         {

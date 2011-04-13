@@ -70,9 +70,13 @@ namespace FluentNHibernate.Mapping
         /// <param name="collectionAlias">The collection alias used to refer to the collection within the query</param>
         public T LoadUsingSqlQuery(string sqlQuery, string collectionAlias)
         {
-            var queryName = this.member.Name.ToLowerInvariant() + "-loader";
+            var queryName = string.Format(
+                "auto-{0}-{1}-loader",
+                    Owner.EntityType.Name.ToLowerInvariant(),
+                    member.Name.ToLowerInvariant()
+            );
 
-            Owner.SqlQuery(queryName, sqlQuery)
+            Owner.SqlQuery(queryName, sqlQuery).Automatic
                  .ReturnCollection(collectionAlias, this.member);
 
             collectionAttributes.Set(x => x.Loader, new LoaderMapping(queryName));

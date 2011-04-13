@@ -173,12 +173,17 @@ namespace FluentNHibernate.MappingModel.ClassBased
 
         public void AddQuery(IQueryMapping mapping)
         {
-            mappedMembers.AddQuery(mapping);
+            mappedMembers.Queries.Add(mapping);
         }
 
         public void AddOrReplaceQuery(IQueryMapping mapping)
         {
-            mappedMembers.AddOrReplaceQuery(mapping);
+            mappedMembers.Queries.AddOrReplace(mapping);
+        }
+
+        public void RemoveQuery(IQueryMapping mapping)
+        {
+            mappedMembers.Queries.Remove(mapping);
         }
         #endregion
 

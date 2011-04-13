@@ -435,10 +435,12 @@
     <Compile Include="MappingModel\Output\XmlLoaderWriter.cs" />
     <Compile Include="MappingModel\Output\XmlBagWriter.cs" />
     <Compile Include="MappingModel\Output\XmlNaturalIdWriter.cs" />
+    <Compile Include="MappingModel\Queries\IQueryMappingInternal.cs" />
     <Compile Include="MappingModel\Queries\IQueryMapping.cs" />
     <Compile Include="MappingModel\Queries\IReturnMapping.cs" />
     <Compile Include="MappingModel\Queries\LoadCollectionMapping.cs" />
     <Compile Include="MappingModel\Queries\LoadCollectionRole.cs" />
+    <Compile Include="MappingModel\Queries\MappedQueries.cs" />
     <Compile Include="MappingModel\Queries\SqlQueryMapping.cs" />
     <Compile Include="Mapping\Access.cs" />
     <Compile Include="Mapping\CollectionTypeResolver.cs" />
@@ -460,6 +462,7 @@
     <Compile Include="Mapping\TuplizerPart.cs" />
     <Compile Include="Utils\StringLikeness.cs" />
     <Compile Include="Visitors\AmbiguousComponentReferenceException.cs" />
+    <Compile Include="Visitors\AutomaticQueryVisitor.cs" />
     <Compile Include="Visitors\RelationshipKeyPairingVisitor.cs" />
     <Compile Include="Visitors\RelationshipPairingVisitor.cs" />
     <Compile Include="MappingModel\ClassBased\ReferenceComponentMapping.cs" />

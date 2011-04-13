@@ -46,6 +46,7 @@ namespace FluentNHibernate
             Conventions = conventionFinder;
 
             visitors.Add(new SeparateSubclassVisitor(subclassProviders));
+            visitors.Add(new AutomaticQueryVisitor());
             visitors.Add(new ComponentReferenceResolutionVisitor(componentResolvers, componentProviders));
             visitors.Add(new ComponentColumnPrefixVisitor());
             visitors.Add(new RelationshipPairingVisitor(BiDirectionalManyToManyPairer));

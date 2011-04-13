@@ -1,6 +1,7 @@
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Output;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Testing.Testing;
 using NUnit.Framework;
 
@@ -121,6 +122,18 @@ namespace FluentNHibernate.Testing.MappingModel.Output
 
             writer.VerifyXml(mapping)
                 .Element("class").Exists();
+        }
+
+        [Test]
+        public void ShouldWriteSqlQueries()
+        {
+            var mapping = new HibernateMapping();
+            mapping.AddQuery(new SqlQueryMapping("xxx", "SQL"));
+
+            writer.VerifyXml(mapping)
+                  .Element("sql-query").Exists()
+                  .HasAttribute("name", "xxx")
+                  .ValueEquals("SQL");
         }
     }
 }

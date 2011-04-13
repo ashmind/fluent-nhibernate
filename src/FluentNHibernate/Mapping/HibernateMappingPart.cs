@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using FluentNHibernate.Mapping.Providers;
 using FluentNHibernate.MappingModel;
@@ -6,6 +7,7 @@ namespace FluentNHibernate.Mapping
 {
     public class HibernateMappingPart : IHibernateMappingProvider
     {
+        private readonly List<IQueryMappingProvider> queries;
         private readonly CascadeExpression<HibernateMappingPart> defaultCascade;
         private readonly AccessStrategyBuilder<HibernateMappingPart> defaultAccess;
         private readonly AttributeStore<HibernateMapping> attributes = new AttributeStore<HibernateMapping>();
@@ -13,6 +15,7 @@ namespace FluentNHibernate.Mapping
 
         public HibernateMappingPart()
         {
+            queries = new List<IQueryMappingProvider>();
             defaultCascade = new CascadeExpression<HibernateMappingPart>(this, value => attributes.Set(x => x.DefaultCascade, value));
             defaultAccess = new AccessStrategyBuilder<HibernateMappingPart>(this, value => attributes.Set(x => x.DefaultAccess, value));
         }
@@ -75,9 +78,27 @@ namespace FluentNHibernate.Mapping
             return this;
         }
 
+        /// <summary>
+        /// Specify a custom sql query.
+        /// </summary>
+        /// <param name="name">A name of the query.</param>
+        /// <param name="queryText">A text of the query.</param>
+        public SqlQueryPart SqlQuery(string name, string queryText)
+        {
+            var part = new SqlQueryPart(name, queryText);
+            this.queries.Add(part);
+            return part;
+        }
+
         HibernateMapping IHibernateMappingProvider.GetHibernateMapping()
         {
-            return new HibernateMapping(attributes.CloneInner());
+            var mapping = new HibernateMapping(attributes.CloneInner());
+            foreach (var queryProvider in this.queries)
+            {
+                mapping.AddOrReplaceQuery(queryProvider.GetQueryMapping());    
+            }
+
+            return mapping;
         }
     }
 }

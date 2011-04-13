@@ -4,6 +4,7 @@ using System.Xml;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Output.Sorting;
+using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Utils;
 using FluentNHibernate.Visitors;
 
@@ -72,25 +73,28 @@ namespace FluentNHibernate.MappingModel.Output
 
         public override void Visit(ClassMapping classMapping)
         {
-            var writer = serviceLocator.GetWriter<ClassMapping>();
-            var hbmClass = writer.Write(classMapping);
-
-            var newClassNode = document.ImportNode(hbmClass.DocumentElement, true);
-
-            XmlNodeSorter.SortClassChildren(newClassNode);
-
-            document.DocumentElement.AppendChild(newClassNode);
+            Integrate(classMapping);
         }
 
         public override void Visit(FilterDefinitionMapping filterDefinitionMapping)
         {
-            var writer = serviceLocator.GetWriter<FilterDefinitionMapping>();
-            var hbmClass = writer.Write(filterDefinitionMapping);
+            Integrate(filterDefinitionMapping);
+        }
 
-            var newClassNode = document.ImportNode(hbmClass.DocumentElement, true);
+        public override void Visit(SqlQueryMapping sqlQueryMapping)
+        {
+            Integrate(sqlQueryMapping);
+        }
 
-            XmlNodeSorter.SortClassChildren(newClassNode);
-            document.DocumentElement.AppendChild(newClassNode);
+        private void Integrate<TMapping>(TMapping mapping)
+        {
+            var writer = serviceLocator.GetWriter<TMapping>();
+            var mappingAsDocument = writer.Write(mapping);
+
+            var mappingAsNode = document.ImportNode(mappingAsDocument.DocumentElement, true);
+
+            XmlNodeSorter.SortClassChildren(mappingAsNode);
+            document.DocumentElement.AppendChild(mappingAsNode);
         }
     }
 }

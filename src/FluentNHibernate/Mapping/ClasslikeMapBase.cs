@@ -458,7 +458,8 @@ namespace FluentNHibernate.Mapping
         }
 
         /// <summary>
-        /// Specify a custom sql query.
+        /// Specify a custom sql query. Note: this may not work on class level,
+        /// even though it generates a correct xml according to NH schema.
         /// </summary>
         /// <param name="name">A name of the query.</param>
         /// <param name="queryText">A text of the query.</param>

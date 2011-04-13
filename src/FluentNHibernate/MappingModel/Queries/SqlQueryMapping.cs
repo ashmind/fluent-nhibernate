@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using FluentNHibernate.Visitors;
 
 namespace FluentNHibernate.MappingModel.Queries
 {
     [Serializable]
-    public class SqlQueryMapping : MappingBaseWithAttributeStore<SqlQueryMapping>, IQueryMapping
+    public class SqlQueryMapping : MappingBaseWithAttributeStore<SqlQueryMapping>, IQueryMappingInternal
     {
         public SqlQueryMapping(string name, string text, params IReturnMapping[] returns)
             : this(name, text, (IList<IReturnMapping>)returns)
@@ -32,6 +31,23 @@ namespace FluentNHibernate.MappingModel.Queries
         {
             get { return Attributes.Get(x => x.Text); }
             set { Attributes.Set(x => x.Text, value); }
+        }
+
+        /// <summary>
+        /// Defines whether the query was generated internally, 
+        /// as a side-effect of some other code (for example, in
+        /// <see cref="FluentNHibernate.Mapping.ToManyBase{T,TChild,TRelationshipAttributes}.LoadUsingSqlQuery" />).
+        /// </summary>
+        /// <seealso cref="AutomaticQueryVisitor" />
+        internal bool Automatic
+        {
+            get { return Attributes.Get(x => x.Automatic); }
+            set { Attributes.Set(x => x.Automatic, value); }
+        }
+
+        bool IQueryMappingInternal.Automatic
+        {
+            get { return this.Automatic; }
         }
 
         public IList<IReturnMapping> Returns { get; private set; }
