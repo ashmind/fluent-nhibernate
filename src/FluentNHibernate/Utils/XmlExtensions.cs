@@ -40,6 +40,9 @@ namespace FluentNHibernate.Utils
 
         public static XmlElement WithAtt(this XmlElement element, string key, string attValue)
         {
+            if (string.IsNullOrEmpty(attValue))
+                return element;
+
             element.SetAttribute(key, attValue);
             return element;
         }
