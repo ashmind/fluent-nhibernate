@@ -65,12 +65,19 @@ namespace FluentNHibernate.MappingModel.Output.Sorting
                 new XmlIdNodeSorter().Sort(node);
             else if (IsCollection(node.Name))
                 new XmlCollectionNodeSorter().Sort(node);
+            else if (IsQuery(node.Name))
+                new XmlQueryNodeSorter().Sort(node);
         }
 
         private bool IsCollection(string name)
         {
             return name == "bag" || name == "set" || name == "list" || name == "map" ||
                 name == "array" || name == "primitive-array";
+        }
+
+        private bool IsQuery(string name)
+        {
+            return name == "sql-query";
         }
     }
 }

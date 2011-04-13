@@ -45,5 +45,21 @@ namespace FluentNHibernate.Testing.MappingModel
             node.OuterXml.ShouldEqual(xml);            
         }
 
+        [Test]
+        public void ShouldPutTheQueryTextAfterAllOtherNodes()
+        {
+            var sorter = new XmlClasslikeNodeSorter();
+
+            var xml = @"<class><sql-query name=""xxx"">Some SQL<load-collection role=""xxx"" /></sql-query></class>";
+            var expected = @"<class><sql-query name=""xxx""><load-collection role=""xxx"" />Some SQL</sql-query></class>";
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            var node = doc.ChildNodes[0];
+            sorter.Sort(node);
+
+            node.OuterXml.ShouldEqual(expected);
+        }
+
     }
 }

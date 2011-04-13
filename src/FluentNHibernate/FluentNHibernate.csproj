@@ -429,6 +429,7 @@
     <Compile Include="MappingModel\MappingBaseWithAttributeStore.cs" />
     <Compile Include="MappingModel\NaturalIdMapping.cs" />
     <Compile Include="MappingModel\Output\CollectionAttributeWriter.cs" />
+    <Compile Include="MappingModel\Output\Sorting\XmlQueryNodeSorter.cs" />
     <Compile Include="MappingModel\Output\XmlLoadCollectionWriter.cs" />
     <Compile Include="MappingModel\Output\XmlSqlQueryWriter.cs" />
     <Compile Include="MappingModel\Output\XmlLoaderWriter.cs" />
