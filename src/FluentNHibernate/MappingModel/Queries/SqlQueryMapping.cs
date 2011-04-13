@@ -10,6 +10,11 @@ namespace FluentNHibernate.MappingModel.Queries
     [Serializable]
     public class SqlQueryMapping : MappingBaseWithAttributeStore<SqlQueryMapping>, IQueryMapping
     {
+        public SqlQueryMapping(string name, string text, params IReturnMapping[] returns)
+            : this(name, text, (IList<IReturnMapping>)returns)
+        {
+        }
+
         public SqlQueryMapping(string name, string text, IList<IReturnMapping> returns)
         {
             Returns = returns;

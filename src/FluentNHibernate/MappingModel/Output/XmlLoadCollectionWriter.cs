@@ -21,7 +21,7 @@ namespace FluentNHibernate.MappingModel.Output
             document = new XmlDocument();
             var element = document.AddElement("load-collection");
             element.WithAtt("alias", mapping.Alias);
-            element.WithAtt("role", mapping.Role);
+            element.WithAtt("role", mapping.Role.Type.FullName + "." + mapping.Role.PropertyName);
 
             base.ProcessLoadCollection(mapping);
         }

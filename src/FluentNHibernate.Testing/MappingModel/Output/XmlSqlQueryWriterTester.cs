@@ -1,7 +1,6 @@
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Output;
 using FluentNHibernate.MappingModel.Queries;
-
 using NUnit.Framework;
 
 namespace FluentNHibernate.Testing.MappingModel.Output
@@ -9,6 +8,8 @@ namespace FluentNHibernate.Testing.MappingModel.Output
     [TestFixture]
     public class XmlSqlQueryWriterTester
     {
+        private class Xyz {}
+
         private IXmlWriter<ClassMapping> writer;
 
         [SetUp]
@@ -35,12 +36,15 @@ namespace FluentNHibernate.Testing.MappingModel.Output
         public void ShouldWriteLoadCollection()
         {
             var mapping = new ClassMapping();
-            mapping.AddQuery(new SqlQueryMapping(null, null, new[] { new LoadCollectionMapping("test-alias", "test.role") }));
+            var loadCollection = new LoadCollectionMapping(
+                "test-alias", new LoadCollectionRole(typeof(Xyz), "Property")
+            );
+            mapping.AddQuery(new SqlQueryMapping(null, null, loadCollection));
 
             writer.VerifyXml(mapping)
                   .Element("sql-query/load-collection").Exists()
                   .HasAttribute("alias", "test-alias")
-                  .HasAttribute("role", "test.role");
+                  .HasAttribute("role", typeof(Xyz).FullName + ".Property");
         }
     }
 }

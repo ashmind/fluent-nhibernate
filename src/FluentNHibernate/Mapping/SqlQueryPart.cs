@@ -27,7 +27,8 @@ namespace FluentNHibernate.Mapping
 
         internal SqlQueryPart ReturnCollection(string alias, Member roleMember)
         {
-            returnMappings.Add(new LoadCollectionMapping(alias, roleMember.DeclaringType.Name + "." + roleMember.Name));
+            var role = new LoadCollectionRole(roleMember.DeclaringType, roleMember.Name);
+            returnMappings.Add(new LoadCollectionMapping(alias, role));
             return this;
         }
 

@@ -438,6 +438,7 @@
     <Compile Include="MappingModel\Queries\IQueryMapping.cs" />
     <Compile Include="MappingModel\Queries\IReturnMapping.cs" />
     <Compile Include="MappingModel\Queries\LoadCollectionMapping.cs" />
+    <Compile Include="MappingModel\Queries\LoadCollectionRole.cs" />
     <Compile Include="MappingModel\Queries\SqlQueryMapping.cs" />
     <Compile Include="Mapping\Access.cs" />
     <Compile Include="Mapping\CollectionTypeResolver.cs" />

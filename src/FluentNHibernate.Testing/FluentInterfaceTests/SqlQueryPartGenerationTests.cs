@@ -34,7 +34,9 @@ namespace FluentNHibernate.Testing.FluentInterfaceTests
                     var load = @return as LoadCollectionMapping;
 
                     load.Alias.ShouldEqual("test");
-                    load.Role.ShouldEqual("OneToManyTarget.SetOfChildren");
+                    load.Role.ShouldNotBeNull();
+                    load.Role.Type.ShouldEqual(typeof (OneToManyTarget));
+                    load.Role.PropertyName.ShouldEqual("SetOfChildren");
                 });
         }
     }

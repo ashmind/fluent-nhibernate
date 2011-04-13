@@ -238,6 +238,15 @@ namespace FluentNHibernate.MappingModel
 
         public void AddQuery(IQueryMapping mapping)
         {
+            if (queries.Exists(x => x.Name == mapping.Name))
+                throw new ArgumentException("Query '" + mapping.Name + "' is already defined.", "mapping");
+
+            queries.Add(mapping);
+        }
+
+        public void AddOrReplaceQuery(IQueryMapping mapping)
+        {
+            queries.RemoveAll(x => x.Name == mapping.Name);
             queries.Add(mapping);
         }
 

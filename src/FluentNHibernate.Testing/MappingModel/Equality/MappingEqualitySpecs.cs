@@ -141,7 +141,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;
@@ -237,7 +239,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;
@@ -334,7 +338,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;
@@ -400,7 +406,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;
@@ -644,7 +652,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;
@@ -1041,7 +1051,9 @@ namespace FluentNHibernate.Testing.MappingModel.Equality
             mapping.AddProperty(new PropertyMapping());
             mapping.AddReference(new ManyToOneMapping());
             mapping.AddStoredProcedure(new StoredProcedureMapping());
-            mapping.AddQuery(new SqlQueryMapping("name", "SQL", new[] { new LoadCollectionMapping("alias", "name.property") }));
+            mapping.AddQuery(new SqlQueryMapping(
+                "name", "SQL", new LoadCollectionMapping("alias", new LoadCollectionRole(typeof(Target), "property"))
+            ));
             mapping.AddSubclass(new SubclassMapping(SubclassType.Subclass));
 
             return mapping;

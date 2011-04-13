@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using FluentNHibernate.Visitors;
 
@@ -9,7 +8,7 @@ namespace FluentNHibernate.MappingModel.Queries
 {
     public class LoadCollectionMapping : MappingBaseWithAttributeStore<LoadCollectionMapping>, IReturnMapping
     {
-        public LoadCollectionMapping(string alias, string role)
+        public LoadCollectionMapping(string alias, LoadCollectionRole role)
         {
             this.Alias = alias;
             this.Role = role;
@@ -21,7 +20,7 @@ namespace FluentNHibernate.MappingModel.Queries
             set { Attributes.Set(x => x.Alias, value); }
         }
 
-        public string Role
+        public LoadCollectionRole Role
         {
             get { return Attributes.Get(x => x.Role); }
             set { Attributes.Set(x => x.Role, value); }
