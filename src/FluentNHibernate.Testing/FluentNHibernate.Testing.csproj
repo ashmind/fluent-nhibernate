@@ -126,7 +126,7 @@
     <Compile Include="DomainModel\MemberBackingFieldTests.cs" />
     <Compile Include="DomainModel\NamingTests.cs" />
     <Compile Include="FluentInterfaceTests\SqlQueryPartGenerationTests.cs" />
-    <Compile Include="MappingModel\Output\XmlSqlQueryWriterTester.cs" />
+    <Compile Include="MappingModel\Output\XmlStoredProcedureWriterTester.cs" />
     <Compile Include="StubTypeSource.cs" />
     <Compile Include="AutoMapping\TestFixtures.cs" />
     <Compile Include="Cfg\Db\DB2ConfigurationTester.cs" />
@@ -197,7 +197,7 @@
     <Compile Include="MappingModel\Output\XmlFilterDefinitionWriterTester.cs" />
     <Compile Include="MappingModel\Output\XmlFilterWriterTester.cs" />
     <Compile Include="MappingModel\Output\XmlReferenceComponentWriterTester.cs" />
-    <Compile Include="MappingModel\Output\XmlStoredProcedureWriterTester.cs" />
+    <Compile Include="MappingModel\Output\XmlSqlQueryWriterTester.cs" />
     <Compile Include="MappingModel\Output\XmlTuplizerWriterTester.cs" />
     <Compile Include="MappingModel\ReferenceComponentMappingSpecs.cs" />
     <Compile Include="ModelTestExtensions.cs" />

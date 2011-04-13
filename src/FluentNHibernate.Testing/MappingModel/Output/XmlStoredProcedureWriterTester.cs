@@ -2,14 +2,13 @@ using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Output;
-using FluentNHibernate.MappingModel.Queries;
 using FluentNHibernate.Testing.Testing;
 using NUnit.Framework;
 
 namespace FluentNHibernate.Testing.MappingModel.Output
 {
     [TestFixture]
-    public class XmlSqlQueryWriterTester
+    public class XmlStoredProcedureWriterTester
     {
         private IXmlWriter<ClassMapping> writer;
 
@@ -21,28 +20,28 @@ namespace FluentNHibernate.Testing.MappingModel.Output
         }
 
         [Test]
-        public void ShouldWriteSqlQueryNameAndText()
+        public void ShouldWriteSqlUpdate()
         {
             var mapping = new ClassMapping();
 
-            mapping.AddQuery(new SqlQueryMapping("test-query", "some SQL", new IReturnMapping[0]));
+            mapping.AddStoredProcedure(new StoredProcedureMapping("sql-update", "update ABC"));
 
             writer.VerifyXml(mapping)
-                .Element("sql-query").Exists()
-                .HasAttribute("name", "test-query")
-                .ValueEquals("some SQL");
+                .Element("sql-update").Exists();
         }
 
         [Test]
-        public void ShouldWriteLoadCollection()
+        public void ShouldWriteCheckAttribute()
         {
-            var mapping = new ClassMapping();
-            mapping.AddQuery(new SqlQueryMapping(null, null, new[] { new LoadCollectionMapping("test-alias", "test.role") }));
+            IXmlWriter<StoredProcedureMapping> writer;
+            var container = new XmlWriterContainer();
+            writer = container.Resolve<IXmlWriter<StoredProcedureMapping>>();
 
-            writer.VerifyXml(mapping)
-                  .Element("sql-query/load-collection").Exists()
-                  .HasAttribute("alias", "test-alias")
-                  .HasAttribute("role", "test.role");
-        }
+            var testHelper = new XmlWriterTestHelper<StoredProcedureMapping>();
+            testHelper.Check(x => x.Check, "none").MapsToAttribute("check");
+
+            testHelper.VerifyAll(writer);
+        }      
+ 
     }
 }
