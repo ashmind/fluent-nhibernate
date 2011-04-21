@@ -79,6 +79,21 @@ namespace FluentNHibernate.Automapping.TestFixtures
 		public int PropertyAlsoOnSiblingInheritedClass { get; set; }
 	}
 
+    namespace TwoLevelsOfChildren {
+        public class ClassWithTwoLevelsOfChildren
+	    {
+		    public virtual int Id { get; set; }
+	    }
+
+        public class FirstLevelChild : ClassWithTwoLevelsOfChildren
+	    {
+	    }
+
+        public class SecondLevelChild : FirstLevelChild
+	    {
+	    }
+    }
+
     public class ClassWithDummyProperty
     {
         public virtual int Id { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Automapping.TestFixtures;
+using FluentNHibernate.Automapping.TestFixtures.TwoLevelsOfChildren;
 using FluentNHibernate.Testing.Automapping;
 using NUnit.Framework;
 
@@ -339,6 +340,24 @@ namespace FluentNHibernate.Testing.AutoMapping.Apm
             new AutoMappingTester<ExampleClass>(autoMapper)
                 .Element("//subclass/any[@name='DictionaryChild']").Exists()
                 .Element("//subclass/map[@name='DictionaryChild']").DoesntExist();
+        }
+
+        [Test]
+        public void SubclassOverrideShouldProcessDiscriminatorValueCorrectlyForThirdLevelSubclasses() 
+        {
+            var autoMapper = AutoMap.AssemblyOf<ClassWithTwoLevelsOfChildren>()
+                .Where(t => t.Namespace == typeof(ClassWithTwoLevelsOfChildren).Namespace)
+                .Override<ClassWithTwoLevelsOfChildren>(x => x.DiscriminateSubClassesOnColumn("Discriminator"))
+                .Override<FirstLevelChild>(x => x.DiscriminatorValue("L1"))
+                .Override<SecondLevelChild>(x => x.DiscriminatorValue("L2"));
+
+            new AutoMappingTester<ClassWithTwoLevelsOfChildren>(autoMapper)
+                .Element("//subclass[@name='" + typeof(FirstLevelChild).AssemblyQualifiedName + "']")
+                    .Exists()
+                    .HasAttribute("discriminator-value", "L1")
+                .Element("//subclass[@name='" + typeof(SecondLevelChild).AssemblyQualifiedName + "']")
+                    .Exists()
+                    .HasAttribute("discriminator-value", "L2");
         }
 
         #endregion

@@ -34,44 +34,43 @@ namespace FluentNHibernate.Automapping
             ((IAutoClasslike)autoMap).AlterModel(mapping);
         }
 
-        public ClassMappingBase MergeMap(Type classType, ClassMappingBase mapping, IList<Member> mappedMembers)
+        public void MergeMap(Type classType, Stack<ClassMappingBase> mappingStack, IList<Member> mappedMembers)
         {
             // map class first, then subclasses - this way subclasses can inspect the class model
             // to see which properties have already been mapped
-            ApplyOverrides(classType, mappedMembers, mapping);
+            ApplyOverrides(classType, mappedMembers, mappingStack.Peek());
 
-            ProcessClass(mapping, classType, mappedMembers);
+            ProcessClass(mappingStack.Peek(), classType, mappedMembers);
 
             if (mappingTypes != null)
-                MapInheritanceTree(classType, mapping, mappedMembers);
-
-            return mapping;
+                MapInheritanceTree(classType, mappingStack, mappedMembers);
         }
 
-        private void MapInheritanceTree(Type classType, ClassMappingBase mapping, IList<Member> mappedMembers)
+        private void MapInheritanceTree(Type classType, Stack<ClassMappingBase> mappingStack, IList<Member> mappedMembers)
         {
-            var discriminatorSet = HasDiscriminator(mapping);
+            var discriminatorSet = HasDiscriminator(mappingStack);
             var isDiscriminated = cfg.IsDiscriminated(classType) || discriminatorSet;
             var mappingTypesWithLogicalParents = GetMappingTypesWithLogicalParents();
+
+            var mapping = mappingStack.Peek();
+            if (isDiscriminated && !discriminatorSet && mapping is ClassMapping)
+            {
+                var discriminatorColumn = cfg.GetDiscriminatorColumn(classType);
+                var discriminator = new DiscriminatorMapping
+                {
+                    ContainingEntityType = classType,
+                    Type = new TypeReference(typeof(string))
+                };
+                discriminator.AddDefaultColumn(new ColumnMapping { Name = discriminatorColumn });
+
+                ((ClassMapping)mapping).Discriminator = discriminator;
+                discriminatorSet = true;
+            }
 
             foreach (var inheritedClass in mappingTypesWithLogicalParents
                 .Where(x => x.Value != null && x.Value.Type == classType)
                 .Select(x => x.Key))
             {
-                if (isDiscriminated && !discriminatorSet && mapping is ClassMapping)
-                {
-                    var discriminatorColumn = cfg.GetDiscriminatorColumn(classType);
-                    var discriminator = new DiscriminatorMapping
-                    {
-                        ContainingEntityType = classType,
-                        Type = new TypeReference(typeof(string))
-                    };
-                    discriminator.AddDefaultColumn(new ColumnMapping { Name = discriminatorColumn });
-
-                    ((ClassMapping)mapping).Discriminator = discriminator;
-                    discriminatorSet = true;
-                }
-
                 SubclassMapping subclassMapping;
 
                 if (!isDiscriminated)
@@ -95,16 +94,16 @@ namespace FluentNHibernate.Automapping
 
                 mapping.AddSubclass(subclassMapping);
 
-				MergeMap(inheritedClass.Type, subclassMapping, subclassMembers);
+                mappingStack.Push(subclassMapping);
+                MergeMap(inheritedClass.Type, mappingStack, subclassMembers);
+                mappingStack.Pop();
             }
         }
 
-        bool HasDiscriminator(ClassMappingBase mapping)
+        bool HasDiscriminator(IEnumerable<ClassMappingBase> mappingStack)
         {
-            if (mapping is ClassMapping && ((ClassMapping)mapping).Discriminator != null)
-                return true;
-
-            return false;
+            return mappingStack.OfType<ClassMapping>()
+                               .Any(mapping => mapping.Discriminator != null);
         }
 
         Dictionary<AutoMapType, AutoMapType> GetMappingTypesWithLogicalParents()
@@ -173,7 +172,10 @@ namespace FluentNHibernate.Automapping
             classMap.SetDefaultValue(x => x.TableName, GetDefaultTableName(classType));
 
             mappingTypes = types;
-            return (ClassMapping)MergeMap(classType, classMap, new List<Member>());
+            var mappingStack = new Stack<ClassMappingBase>();
+            mappingStack.Push(classMap);
+            MergeMap(classType, mappingStack, new List<Member>());
+            return classMap;
         }
 
         private string GetDefaultTableName(Type type)

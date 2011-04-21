@@ -444,7 +444,9 @@ namespace FluentNHibernate.Automapping
                 mapping.SetDefaultValue(x => x.Access, cfg.GetAccessStrategyForReadOnlyProperty(context.ComponentMember).ToString());
 
             mapper.FlagAsMapped(context.ComponentType);
-            mapper.MergeMap(context.ComponentType, mapping, new List<Member>());
+            var mappingStack = new Stack<ClassMappingBase>();
+            mappingStack.Push(mapping);
+            mapper.MergeMap(context.ComponentType, mappingStack, new List<Member>());
 
             return mapping;
         }
