@@ -281,9 +281,9 @@ namespace FluentNHibernate.Testing
             return expected;
         }
 
-        public static void ChildNodeCountShouldEqual(this XmlElement element, int expected)
+        public static void ChildNodeCountShouldEqual(this XmlElement element, int expected, string childXPath)
         {
-            Assert.AreEqual(expected, element.ChildNodes.Count);
+            Assert.AreEqual(expected, element.SelectNodes(childXPath).Count);
         }
 
         public static XmlElement ShouldHaveChild(this XmlElement element, string xpath)

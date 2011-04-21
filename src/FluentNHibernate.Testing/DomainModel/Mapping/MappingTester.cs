@@ -89,7 +89,12 @@ namespace FluentNHibernate.Testing.DomainModel.Mapping
 
         public virtual MappingTester<T> HasThisManyChildNodes(int expected)
         {
-            currentElement.ChildNodeCountShouldEqual(expected);
+            return this.HasThisManyChildNodes(expected, "*");
+        }
+
+        public virtual MappingTester<T> HasThisManyChildNodes(int expected, string childElementName)
+        {
+            currentElement.ChildNodeCountShouldEqual(expected, childElementName);
 
             return this;
         }
@@ -126,7 +131,7 @@ namespace FluentNHibernate.Testing.DomainModel.Mapping
 
         public virtual MappingTester<T> Exists()
         {
-            Assert.IsNotNull(currentElement, "Couldn't find element matching '" + currentPath + "'");
+            Assert.IsNotNull(currentElement, "Couldn't find element matching '{0}' in document:\r\n{1}", currentPath, this.ToString());
 
             return this;
         }
